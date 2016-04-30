@@ -1,55 +1,43 @@
 package pl.touch.matiko101.Game.Objects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.physics.box2d.Body;
+import pl.touch.matiko101.Game.Objects.ObjectContents.GraphicsContent;
+import pl.touch.matiko101.Game.Objects.ObjectContents.InputContent;
+import pl.touch.matiko101.Game.Objects.ObjectContents.PhysicsContent;
 
-import pl.touch.matiko101.Game.Box2D.MyWorld;
-
-/**
- * Created by mateusz on 2016-04-15.
- */
 public abstract class Object
 {
-    Sprite sprite;
-    Texture texture;
-    Body body;
+    protected GraphicsContent graphicsContent;
+    protected PhysicsContent physicsContent;
+    protected InputContent inputContent;
 
     public Object(float x, float y, String pathToFile)
     {
-        texture = new Texture(Gdx.files.internal(pathToFile));
-        sprite = new Sprite(texture);
-        sprite.setPosition(x * MyWorld.SCALE, y * MyWorld.SCALE);
-        sprite.setSize(sprite.getWidth() * MyWorld.SCALE, sprite.getHeight() * MyWorld.SCALE);
-        sprite.flip(false, false);
-    }
+        graphicsContent = new GraphicsContent(x, y, pathToFile)
+        {
+            @Override
+            public void action()
+            {
 
-    public void setBody(Body body)
-    {
-        this.body = body;
-        body.setUserData(this);
-    }
-    public void setObjectProperties(float density, float friction, float restitution )
-    {
-        body.getFixtureList().first().setDensity(density);
-        body.getFixtureList().first().setFriction(friction);
-        body.getFixtureList().first().setRestitution(restitution);
+            }
+
+            @Override
+            public void init()
+            {
+                initTextureContent();
+                initSpriteContent();
+            }
+        };
+        graphicsContent.init();
     }
 
     public abstract void action();
 
-
-    public Sprite getSprite()
+    public PhysicsContent getPhysicsContent()
     {
-        return sprite;
+        return physicsContent;
     }
-    public Texture getTexture()
+    public GraphicsContent getGraphicsContent()
     {
-        return texture;
-    }
-    public Body getBody()
-    {
-        return body;
+        return graphicsContent;
     }
 }

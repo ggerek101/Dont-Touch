@@ -1,7 +1,9 @@
 package pl.touch.matiko101.Game.Objects;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 
+import pl.touch.matiko101.Game.Objects.ObjectContents.InputContent;
+import pl.touch.matiko101.Game.Objects.ObjectContents.PhysicsContent;
 import pl.touch.matiko101.Graphics;
 
 /**
@@ -9,119 +11,95 @@ import pl.touch.matiko101.Graphics;
  */
 public class Hero extends Object
 {
-    public enum Direction{LEFT, RIGHT}
-    private enum TeleportTo{UP, DOWN, NULL}
-
-    private float v;
-
-    private Direction direction;
-    private boolean changeDirection;
-
-    private TeleportTo teleportTo;
-
     public Hero(float x, float y, String pathToFile)
     {
         super(x, y, pathToFile);
 
-        v = 5;
-
-        direction = Direction.LEFT;
-        changeDirection = false;
-
-        teleportTo = TeleportTo.NULL;
-
-    }
-
-    private void shouldChangeDirection()
-    {
-        if(changeDirection)
+        physicsContent = new PhysicsContent()
         {
-            if(direction == Direction.LEFT)
+            @Override
+            public void action()
             {
-                direction = Direction.RIGHT;
+                jump();
+                changeDirection();
+                move();
+                checkChangePositionTo();
+                teleport();
             }
-            else
+
+            @Override
+            public void init()
             {
-                direction = Direction.LEFT;
+                changePositionTo = ChangePositionTo.ACTUALPOSITION;
+
+                shouldChangeDirection = false;
+
+                acceleration = new Vector2(0,0);
             }
-            changeDirection = false;
+        };
+
+        inputContent = new InputContent()
+        {
+            @Override
+            public void action()
+            {
+
+            }
+
+            @Override
+            public void init()
+            {
+
+            }
+        };
+
+        physicsContent.init();
+        inputContent.init();
+
+
+        }
+
+    public void jump()
+    {
+        if (inputContent.touchedScreen())
+        {
+            physicsContent.getBody().setLinearVelocity(physicsContent.getBody().getLinearVelocity().x, physicsContent.getAcceleration().y);
         }
     }
 
-    private void moveByDirection()
+    private void changeDirection()
     {
-        if(direction == Direction.RIGHT)
+        if (physicsContent.getShouldChangeDirection())
         {
-            body.setLinearVelocity(v, body.getLinearVelocity().y);
-        }
-        else
-        {
-            body.setLinearVelocity(-v, body.getLinearVelocity().y);
+            float opposedAccelerationX = physicsContent.setFloatVariableOnOpposed(physicsContent.getAcceleration().x);
+
+            physicsContent.setAcceleration(new Vector2(opposedAccelerationX, physicsContent.getAcceleration().y));
+            physicsContent.setShouldChangeDirection(false);
         }
     }
 
-    private boolean shouldJump()
+    private void move()
     {
-        if(Gdx.input.isTouched())
-        {
-            return true;
-        }
-        return false;
+        physicsContent.getBody().setLinearVelocity(physicsContent.getAcceleration().x, physicsContent.getBody().getLinearVelocity().y);
     }
 
-    private void jump()
+    private void checkChangePositionTo()
     {
-        body.setLinearVelocity(body.getLinearVelocity().x, v);
-    }
-
-    private boolean shouldTeleport()
-    {
-        if(body.getPosition().y - sprite.getHeight() > Graphics.getCamera().viewportHeight)
-        {
-            teleportTo = TeleportTo.DOWN;
-            return true;
-        }
-        else if(body.getPosition().y < 0)
-        {
-            teleportTo = TeleportTo.UP;
-            return true;
-        }
-        teleportTo = TeleportTo.NULL;
-        return false;
+        physicsContent.getChangePositionTo(new Vector2(graphicsContent.getSprite().getWidth(), graphicsContent.getSprite().getHeight()), new Vector2(Graphics.getCamera().viewportWidth, Graphics.getCamera().viewportHeight));
     }
 
     private void teleport()
     {
-        switch (teleportTo)
-        {
-            case UP:
-                body.setTransform(body.getPosition().x, Graphics.getCamera().viewportHeight + sprite.getHeight(), 0);
-                break;
-            case DOWN:
-                body.setTransform(body.getPosition().x, 0, 0);
-                break;
-            case NULL:
-                break;
-        }
+        Vector2 pos = physicsContent.getBody().getPosition();
+        Vector2 bodyDim = new Vector2 (graphicsContent.getSprite().getWidth(), graphicsContent.getSprite().getHeight());
+        float angle = physicsContent.getBody().getAngle();
+        physicsContent.getBody().setTransform(physicsContent.getMethodSetFromChangePositionTo(pos, bodyDim), angle);
     }
 
     @Override
     public void action()
     {
-        if(shouldJump())
-        {
-            jump();
-        }
-        if(shouldTeleport())
-        {
-            teleport();
-        }
-        shouldChangeDirection();
-        moveByDirection();
+        physicsContent.action();
     }
 
-    public void setChangeDirection(boolean changeDirection)
-    {
-        this.changeDirection = changeDirection;
-    }
 }

@@ -7,15 +7,13 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-import pl.touch.matiko101.Game.Objects.Hero;
-import pl.touch.matiko101.Game.Objects.Line;
+import pl.touch.matiko101.Game.Objects.*;
 
 /**
  * Created by mateusz on 2016-04-15.
  */
 public class CollisionDetection implements ContactListener
 {
-
     @Override
     public void beginContact(Contact contact)
     {
@@ -24,15 +22,15 @@ public class CollisionDetection implements ContactListener
         Body bodyA = contact.getFixtureA().getBody();
         Body bodyB = contact.getFixtureB().getBody();
 
-        if(bodyA.getUserData() instanceof Hero && bodyB.getUserData() instanceof Line)
+        if(bodyA.getUserData() == "hero" && bodyB.getUserData() == "line")
         {
             Hero h = (Hero) bodyA.getUserData();
-            h.setChangeDirection(true);
+            h.getPhysicsContent().setShouldChangeDirection(true);
         }
-        if(bodyA.getUserData() instanceof Line && bodyB.getUserData() instanceof Hero)
+        if(bodyA.getUserData() == "line" && bodyB.getUserData() == "hero")
         {
             Hero h = (Hero) bodyB.getUserData();
-            h.setChangeDirection(true);
+            h.getPhysicsContent().setShouldChangeDirection(true);
         }
     }
 

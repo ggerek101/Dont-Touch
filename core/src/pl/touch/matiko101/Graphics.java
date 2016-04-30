@@ -3,13 +3,10 @@ package pl.touch.matiko101;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import javafx.scene.Camera;
-import pl.touch.matiko101.Game.Objects.*;
 import pl.touch.matiko101.Game.Objects.Object;
 
 /**
@@ -45,8 +42,8 @@ public class Graphics
 
     public void draw(Object o) {
         batch.begin();
-        o.getSprite().setPosition(o.getBody().getPosition().x - o.getSprite().getWidth() / 2, o.getBody().getPosition().y - o.getSprite().getHeight() / 2);
-        o.getSprite().draw(batch);
+        o.getGraphicsContent().getSprite().setPosition(o.getPhysicsContent().getBody().getPosition().x - o.getGraphicsContent().getSprite().getWidth() / 2, o.getPhysicsContent().getBody().getPosition().y - o.getGraphicsContent().getSprite().getHeight() / 2);
+        o.getGraphicsContent().getSprite().draw(batch);
         batch.end();
     }
 

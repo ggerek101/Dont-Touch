@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import pl.touch.matiko101.Game.Box2D.MyWorld;
 import pl.touch.matiko101.Graphics;
 import pl.touch.matiko101.Main;
+import pl.touch.matiko101.Game.Objects.Object;
 
 /**
  * Created by mateusz on 2016-04-03.

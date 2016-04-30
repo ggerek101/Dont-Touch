@@ -3,10 +3,12 @@ package pl.touch.matiko101.Game;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 
+import java.util.Vector;
+
 import pl.touch.matiko101.Game.Box2D.CollisionDetection;
 import pl.touch.matiko101.Game.Box2D.MyWorld;
-import pl.touch.matiko101.Game.Objects.Hero;
-import pl.touch.matiko101.Game.Objects.Line;
+import pl.touch.matiko101.Game.Objects.*;
+import pl.touch.matiko101.Game.Objects.Object;
 
 /**
  * Created by mateusz on 2016-04-15.
@@ -16,6 +18,8 @@ public class ObjectManager
     private MyWorld myWorld;
 
     private CollisionDetection collisionDetection;
+
+   // private Vector<Object>objects;
 
     private Hero hero;
     private Line leftLine;
@@ -28,14 +32,18 @@ public class ObjectManager
         collisionDetection = new CollisionDetection();
         myWorld.world.setContactListener(collisionDetection);
 
+       // objects = new Vector<Object>();
+
+       // objects.add(new Hero(960, 600, "hero.png"));
+
         hero = new Hero(960, 600, "hero.png");
-        hero.setBody(myWorld.createObject(hero.getSprite(), BodyDef.BodyType.DynamicBody));
+        hero.getPhysicsContent().setBody(myWorld.createObject(hero.getGraphicsContent().getSprite(), BodyDef.BodyType.DynamicBody), "hero");
 
         leftLine = new Line(0,0,"line.png");
-        leftLine.setBody(myWorld.createObject(leftLine.getSprite(), BodyDef.BodyType.StaticBody));
+        leftLine.getPhysicsContent().setBody(myWorld.createObject(leftLine.getGraphicsContent().getSprite(), BodyDef.BodyType.StaticBody), "line");
 
         rightLine = new Line(1820,0,"line.png");
-        rightLine.setBody(myWorld.createObject(rightLine.getSprite(), BodyDef.BodyType.StaticBody));
+        rightLine.getPhysicsContent().setBody(myWorld.createObject(rightLine.getGraphicsContent().getSprite(), BodyDef.BodyType.StaticBody), "line");
     }
 
     public void update()
